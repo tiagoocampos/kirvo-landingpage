@@ -1,0 +1,159 @@
+@import "tailwindcss";
+
+/* Paleta: só preto e branco. Hierarquia = variações de opacidade. */
+@theme static {
+  --color-ink: #0a0a0a;
+  --color-bg: #ffffff;
+
+  --color-ink-60: rgba(10, 10, 10, 0.6);
+  --color-ink-40: rgba(10, 10, 10, 0.4);
+  --color-ink-20: rgba(10, 10, 10, 0.2);
+  --color-ink-10: rgba(10, 10, 10, 0.1);
+  --color-ink-05: rgba(10, 10, 10, 0.05);
+
+  --color-paper-60: rgba(255, 255, 255, 0.6);
+  --color-paper-40: rgba(255, 255, 255, 0.4);
+  --color-paper-20: rgba(255, 255, 255, 0.2);
+  --color-paper-15: rgba(255, 255, 255, 0.15);
+  --color-paper-08: rgba(255, 255, 255, 0.08);
+
+  /* Um único raio em todo o site (cards, botões, inputs). */
+  --radius: 0.375rem;
+}
+
+/*
+ * Tokens semânticos por "tom" de seção. Componentes usam bg-surface / text-fg /
+ * text-fg-muted / border-line e inversão de seção acontece só trocando data-tone.
+ */
+:root,
+[data-tone="light"] {
+  --surface: var(--color-bg);
+  --fg: var(--color-ink);
+  --fg-muted: var(--color-ink-60);
+  --fg-faint: var(--color-ink-40);
+  --line: var(--color-ink-10);
+  --line-strong: var(--color-ink-20);
+  --tint: var(--color-ink-05);
+}
+
+[data-tone="dark"] {
+  --surface: var(--color-ink);
+  --fg: var(--color-bg);
+  --fg-muted: var(--color-paper-60);
+  --fg-faint: var(--color-paper-40);
+  --line: var(--color-paper-15);
+  --line-strong: var(--color-paper-20);
+  --tint: var(--color-paper-08);
+}
+
+/* Mapeamento dos tokens do shadcn — reavaliado em cada elemento de tom. */
+:root,
+[data-tone] {
+  --background: var(--surface);
+  --foreground: var(--fg);
+  --card: var(--surface);
+  --card-foreground: var(--fg);
+  --popover: var(--surface);
+  --popover-foreground: var(--fg);
+  --primary: var(--fg);
+  --primary-foreground: var(--surface);
+  --secondary: var(--tint);
+  --secondary-foreground: var(--fg);
+  --muted: var(--tint);
+  --muted-foreground: var(--fg-muted);
+  --accent: var(--tint);
+  --accent-foreground: var(--fg);
+  --destructive: var(--fg);
+  --border: var(--line);
+  --input: var(--line-strong);
+  --ring: var(--fg);
+}
+
+/*
+ * Fontes via next/font (ver src/app/layout.tsx): Keronige (exibição) e Inter (corpo).
+ * `inline` porque --font-keronige / --font-inter são definidas nas classes do <html>.
+ */
+@theme inline {
+  --font-display: var(--font-keronige), "Keronige", serif;
+  --font-sans: var(--font-inter), "Inter", sans-serif;
+
+  --color-surface: var(--surface);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-faint: var(--fg-faint);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-tint: var(--tint);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: var(--radius);
+  --radius-lg: var(--radius);
+  --radius-xl: var(--radius);
+}
+
+@layer base {
+  * {
+    border-color: var(--line);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+    font-family: var(--font-sans);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-bg);
+    color: var(--color-ink);
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-bg);
+  }
+
+  [data-tone="dark"] ::selection {
+    background: var(--color-bg);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--fg);
+    outline-offset: 3px;
+  }
+
+  /* Keronige tem um único peso: nunca sintetizar negrito. */
+  .font-display {
+    font-weight: 400;
+    font-synthesis: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
