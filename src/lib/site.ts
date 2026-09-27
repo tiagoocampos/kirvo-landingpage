@@ -1,16 +1,35 @@
 function resolveSiteUrl(): string {
-  const url = process.env.NEXT_PUBLIC_SITE_URL
-  if (url) return url
+  const raw = process.env.NEXT_PUBLIC_SITE_URL
 
-  // Sem a env em produção, metadataBase, robots.txt e sitemap.xml apontariam
-  // silenciosamente para localhost — falha alto e cedo em vez disso.
-  if (process.env.NODE_ENV === "production") {
+  if (!raw || !raw.trim()) {
+    // Sem a env em produção, metadataBase, robots.txt e sitemap.xml apontariam
+    // silenciosamente para localhost — falha alto e cedo em vez disso.
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(
+        "NEXT_PUBLIC_SITE_URL não está definida. Configure-a antes do build de produção " +
+          "(ex.: https://seu-dominio.com.br) — ver .env.example."
+      )
+    }
+    return "http://localhost:3000"
+  }
+
+  // Tolera erros comuns de configuração na plataforma de deploy: espaços nas
+  // pontas, aspas coladas por engano no valor, domínio sem protocolo e barra
+  // final (que geraria "//" ao concatenar em robots.ts/sitemap.ts).
+  let value = raw.trim().replace(/^['"]+|['"]+$/g, "")
+  if (!/^https?:\/\//i.test(value)) value = `https://${value}`
+  value = value.replace(/\/+$/, "")
+
+  try {
+    new URL(value)
+  } catch {
     throw new Error(
-      "NEXT_PUBLIC_SITE_URL não está definida. Configure-a antes do build de produção " +
-        "(ex.: https://seu-dominio.com.br) — ver .env.example."
+      `NEXT_PUBLIC_SITE_URL="${raw}" não é uma URL válida (ficou "${value}" depois de normalizada). ` +
+        "Use o formato https://seu-dominio.com.br, sem espaços, aspas ou caminho."
     )
   }
-  return "http://localhost:3000"
+
+  return value
 }
 
 // URL pública do site (usada em metadataBase, robots e sitemap).

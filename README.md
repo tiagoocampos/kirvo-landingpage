@@ -68,6 +68,9 @@ Só `Header`, `ContactSection`, `Reveal` e o `Sheet` são Client Components; o r
   Em desenvolvimento cai em `http://localhost:3000`; **em produção (`NODE_ENV=production`) o build
   falha se ela não estiver definida** (`src/lib/site.ts`), pra nunca publicar com URLs de localhost
   nesses arquivos. Defina antes do `npm run build` de produção (ver `.env.example`).
+  `src/lib/site.ts` normaliza erros comuns de configuração da plataforma de deploy (espaços,
+  aspas coladas no valor, domínio sem `https://`, barra final) — mas se o valor não virar uma URL
+  válida mesmo assim, o build falha com uma mensagem dizendo qual valor foi recebido.
 - **WhatsApp:** número e mensagem padrão em `WHATSAPP_NUMBER` / `WHATSAPP_DEFAULT_MESSAGE`
   (`src/lib/site.ts`), usados pelo botão flutuante, pelo formulário de contato e pelo rodapé.
 
